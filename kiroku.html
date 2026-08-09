@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<link rel="stylesheet" href="kiroku.css">
+</head>
+<body>
+    <header>
+        <h1>廻珠記録帳</h1> 
+        <a href="index.html">ホームへ戻る</a>
+    </header>
+    <main>
+<form>
+ <label>
+ 日付
+ <input type="date" name="date" required>
+</label>
+<label>
+ 廻珠数
+ <input type="number" name="count" required> 
+</label>
+<label>
+ 備考
+ <textarea name="notes"></textarea>
+</label>
+<button type="submit">記録する</button>
+</form>
+<section>
+ <h2>記録一覧</h2>
+<div class="record">
+    <p>日付</p>
+    <p>廻珠数</p>
+    <p>備考</p>
+    <button>削除</button>
+    <button>編集</button>      
+</div>
+</section>
+</main>
+</body>
+</html>

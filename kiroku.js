@@ -1,5 +1,7 @@
 const form = document.getElementById('kiroku-form');
 const recordList = document.getElementById('record-list');
+const submitButton = document.getElementById('submit-button');
+const cancelEditButton = document.getElementById('cancel-edit-button');
 
 const savedRecords = localStorage.getItem('records');
 let records = [];
@@ -12,33 +14,78 @@ if (savedRecords) {
     }
 }
 
-// 保存されている記録を表示
-records.forEach(function(recordData) {
+let editingRecord = null;
+
+function saveRecords() {
+    localStorage.setItem('records', JSON.stringify(records));
+}
+
+function createRecordElement(recordData) {
     const record = document.createElement('div');
     record.className = 'record';
 
-    record.innerHTML = `
-        <p>日付：${recordData.date}</p>
-        <p>廻珠数：${recordData.count}</p>
-        <p>備考：${recordData.note}</p>
-        <button class="delete-button">削除</button>
-        <button class="edit-button">編集</button>
-    `;
+    const dateP = document.createElement('p');
+    dateP.textContent = `日付：${recordData.date}`;
 
-    recordList.appendChild(record);
+    const countP = document.createElement('p');
+    countP.textContent = `廻珠数：${recordData.count}`;
 
-    const deleteButton = record.querySelector('.delete-button');
+    const noteP = document.createElement('p');
+    noteP.textContent = `備考：${recordData.note}`;
 
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'delete-button';
+    deleteButton.textContent = '削除';
     deleteButton.addEventListener('click', function() {
-        record.remove();
-
         const index = records.indexOf(recordData);
         records.splice(index, 1);
-
-        localStorage.setItem('records', JSON.stringify(records));
+        saveRecords();
+        if (editingRecord === recordData) {
+            exitEditMode();
+        }
+        renderRecords();
     });
-});
 
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.className = 'edit-button';
+    editButton.textContent = '編集';
+    editButton.addEventListener('click', function() {
+        enterEditMode(recordData);
+    });
+
+    record.append(dateP, countP, noteP, deleteButton, editButton);
+    return record;
+}
+
+function renderRecords() {
+    recordList.innerHTML = '';
+    records.forEach(function(recordData) {
+        recordList.appendChild(createRecordElement(recordData));
+    });
+}
+
+function enterEditMode(recordData) {
+    editingRecord = recordData;
+    form.elements['date'].value = recordData.date;
+    form.elements['count'].value = recordData.count;
+    form.elements['notes'].value = recordData.note;
+    submitButton.textContent = '更新する';
+    cancelEditButton.hidden = false;
+    form.elements['date'].focus();
+}
+
+function exitEditMode() {
+    editingRecord = null;
+    form.reset();
+    submitButton.textContent = '記録する';
+    cancelEditButton.hidden = true;
+}
+
+cancelEditButton.addEventListener('click', exitEditMode);
+
+renderRecords();
 
 // フォーム送信
 form.addEventListener('submit', function(event) {
@@ -48,42 +95,19 @@ form.addEventListener('submit', function(event) {
     const count = form.elements['count'].value;
     const note = form.elements['notes'].value;
 
-    const recordData = {
-        date: date,
-        count: count,
-        note: note
-    };
-
-    records.push(recordData);
-
-    const record = document.createElement('div');
-    record.className = 'record';
-
-    record.innerHTML = `
-        <p>日付：${date}</p>
-        <p>廻珠数：${count}</p>
-        <p>備考：${note}</p>
-        <button class="delete-button">削除</button>
-        <button class="edit-button">編集</button>
-    `;
-
-    recordList.appendChild(record);
-
-    const deleteButton = record.querySelector('.delete-button');
-    const editButton = record.querySelector('.edit-button');
-
-    deleteButton.addEventListener('click', function() {
-        record.remove();
-
-        const index = records.indexOf(recordData);
-        records.splice(index, 1);
-
-        localStorage.setItem('records', JSON.stringify(records));
-    });
-
-    form.reset();
-
-    localStorage.setItem('records', JSON.stringify(records));
-
-    alert('フォームが送信されました！');
+    if (editingRecord) {
+        editingRecord.date = date;
+        editingRecord.count = count;
+        editingRecord.note = note;
+        saveRecords();
+        exitEditMode();
+        renderRecords();
+        alert('記録を更新しました！');
+    } else {
+        records.push({ date: date, count: count, note: note });
+        saveRecords();
+        renderRecords();
+        form.reset();
+        alert('フォームが送信されました！');
+    }
 });

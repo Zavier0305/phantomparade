@@ -20,7 +20,7 @@
                     <input type="date" name="date" required>
                 </label>
                 <label>
-                    廻珠数
+                    廻珠数(その時点の所持数)
                     <input type="number" name="count" min="0" required>
                 </label>
                 <label>
@@ -36,7 +36,7 @@
             <h2>集計</h2>
             <div class="stats-numbers">
                 <div class="stat-item">
-                    <span class="stat-label">累計獲得数</span>
+                    <span class="stat-label">現在の廻珠数</span>
                     <span class="stat-value" id="total-count">0個</span>
                 </div>
                 <div class="stat-item">
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div id="chart-wrapper">
-                <svg id="chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="累計廻珠数の推移グラフ"></svg>
+                <svg id="chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="廻珠数の推移グラフ"></svg>
             </div>
         </section>
 

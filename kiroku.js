@@ -110,28 +110,25 @@ function renderRecords() {
     renderChart();
 }
 
-function renderStats() {
-    const total = records.reduce(function(sum, recordData) {
-        const count = Number(recordData.count);
-        return sum + (Number.isFinite(count) ? count : 0);
-    }, 0);
-
-    totalCountEl.textContent = `${total}個`;
-    singlePullCountEl.textContent = `${Math.floor(total / SINGLE_PULL_COST)}回`;
-    tenPullCountEl.textContent = `${Math.floor(total / TEN_PULL_COST)}回`;
+function getSortedPoints() {
+    return records
+        .slice()
+        .sort(function(a, b) {
+            return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+        })
+        .map(function(recordData) {
+            const value = Number(recordData.count);
+            return { date: recordData.date, value: Number.isFinite(value) ? value : 0 };
+        });
 }
 
-function getSortedCumulativePoints() {
-    const sorted = records.slice().sort(function(a, b) {
-        return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
-    });
+function renderStats() {
+    const points = getSortedPoints();
+    const current = points.length === 0 ? 0 : points[points.length - 1].value;
 
-    let cumulative = 0;
-    return sorted.map(function(recordData) {
-        const count = Number(recordData.count);
-        cumulative += Number.isFinite(count) ? count : 0;
-        return { date: recordData.date, total: cumulative };
-    });
+    totalCountEl.textContent = `${current}個`;
+    singlePullCountEl.textContent = `${Math.floor(current / SINGLE_PULL_COST)}回`;
+    tenPullCountEl.textContent = `${Math.floor(current / TEN_PULL_COST)}回`;
 }
 
 function renderChart() {
@@ -139,7 +136,7 @@ function renderChart() {
         chart.removeChild(chart.firstChild);
     }
 
-    const points = getSortedCumulativePoints();
+    const points = getSortedPoints();
 
     if (points.length === 0) {
         const text = document.createElementNS(SVG_NS, 'text');
@@ -160,13 +157,15 @@ function renderChart() {
     const paddingBottom = 30;
     const plotWidth = width - paddingLeft - paddingRight;
     const plotHeight = height - paddingTop - paddingBottom;
-    const maxTotal = points[points.length - 1].total || 1;
+    const maxValue = points.reduce(function(max, point) {
+        return Math.max(max, point.value);
+    }, 0) || 1;
 
     const coords = points.map(function(point, index) {
         const x = points.length === 1
             ? paddingLeft + plotWidth / 2
             : paddingLeft + (index * plotWidth) / (points.length - 1);
-        const y = paddingTop + plotHeight - (point.total / maxTotal) * plotHeight;
+        const y = paddingTop + plotHeight - (point.value / maxValue) * plotHeight;
         return { x: x, y: y, point: point };
     });
 
@@ -187,7 +186,7 @@ function renderChart() {
         label.setAttribute('y', y + 4);
         label.setAttribute('text-anchor', 'end');
         label.setAttribute('class', 'chart-axis-label');
-        label.textContent = Math.round(maxTotal * ratio);
+        label.textContent = Math.round(maxValue * ratio);
         chart.appendChild(label);
     });
 
@@ -231,7 +230,7 @@ function renderChart() {
 
     chart.appendChild(defs);
 
-    // 塗りつぶし(累計の推移を面で見せる)
+    // 塗りつぶし(廻珠数の推移を面で見せる)
     const areaPoints = [`${coords[0].x},${paddingTop + plotHeight}`]
         .concat(coords.map(function(c) { return `${c.x},${c.y}`; }))
         .concat([`${coords[coords.length - 1].x},${paddingTop + plotHeight}`]);
@@ -255,7 +254,7 @@ function renderChart() {
         circle.setAttribute('cy', c.y);
         circle.setAttribute('r', '4');
         circle.setAttribute('fill', '#f1d78c');
-        circle.appendChild(makeTitle(`${c.point.date}：累計${c.point.total}個`));
+        circle.appendChild(makeTitle(`${c.point.date}：${c.point.value}個`));
         chart.appendChild(circle);
 
         // 日付ラベルは最初と最後の点のみ表示(重なり防止)

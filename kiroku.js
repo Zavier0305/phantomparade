@@ -13,6 +13,13 @@ const SINGLE_PULL_COST = 300;
 const TEN_PULL_COST = 3000;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+function getTodayDateString() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${now.getFullYear()}-${month}-${day}`;
+}
+
 const savedRecords = localStorage.getItem('records');
 let records = [];
 
@@ -184,29 +191,70 @@ function renderChart() {
         chart.appendChild(label);
     });
 
+    // グラデーション定義(塗りつぶし用)とグロー効果(折れ線・点用)
+    const defs = document.createElementNS(SVG_NS, 'defs');
+
+    const gradient = document.createElementNS(SVG_NS, 'linearGradient');
+    gradient.setAttribute('id', 'chart-area-gradient');
+    gradient.setAttribute('x1', '0');
+    gradient.setAttribute('y1', '0');
+    gradient.setAttribute('x2', '0');
+    gradient.setAttribute('y2', '1');
+    const stopTop = document.createElementNS(SVG_NS, 'stop');
+    stopTop.setAttribute('offset', '0%');
+    stopTop.setAttribute('stop-color', '#d4af37');
+    stopTop.setAttribute('stop-opacity', '0.35');
+    const stopBottom = document.createElementNS(SVG_NS, 'stop');
+    stopBottom.setAttribute('offset', '100%');
+    stopBottom.setAttribute('stop-color', '#d4af37');
+    stopBottom.setAttribute('stop-opacity', '0');
+    gradient.append(stopTop, stopBottom);
+    defs.appendChild(gradient);
+
+    const glow = document.createElementNS(SVG_NS, 'filter');
+    glow.setAttribute('id', 'chart-glow');
+    glow.setAttribute('x', '-50%');
+    glow.setAttribute('y', '-50%');
+    glow.setAttribute('width', '200%');
+    glow.setAttribute('height', '200%');
+    const blur = document.createElementNS(SVG_NS, 'feGaussianBlur');
+    blur.setAttribute('stdDeviation', '3');
+    blur.setAttribute('result', 'blur');
+    const merge = document.createElementNS(SVG_NS, 'feMerge');
+    const mergeBlur = document.createElementNS(SVG_NS, 'feMergeNode');
+    mergeBlur.setAttribute('in', 'blur');
+    const mergeSource = document.createElementNS(SVG_NS, 'feMergeNode');
+    mergeSource.setAttribute('in', 'SourceGraphic');
+    merge.append(mergeBlur, mergeSource);
+    glow.append(blur, merge);
+    defs.appendChild(glow);
+
+    chart.appendChild(defs);
+
     // 塗りつぶし(累計の推移を面で見せる)
     const areaPoints = [`${coords[0].x},${paddingTop + plotHeight}`]
         .concat(coords.map(function(c) { return `${c.x},${c.y}`; }))
         .concat([`${coords[coords.length - 1].x},${paddingTop + plotHeight}`]);
     const area = document.createElementNS(SVG_NS, 'polygon');
     area.setAttribute('points', areaPoints.join(' '));
-    area.setAttribute('fill', 'rgba(139, 69, 19, 0.15)');
+    area.setAttribute('fill', 'url(#chart-area-gradient)');
     area.setAttribute('stroke', 'none');
     chart.appendChild(area);
 
     const polyline = document.createElementNS(SVG_NS, 'polyline');
     polyline.setAttribute('points', coords.map(function(c) { return `${c.x},${c.y}`; }).join(' '));
     polyline.setAttribute('fill', 'none');
-    polyline.setAttribute('stroke', '#8b4513');
-    polyline.setAttribute('stroke-width', '2');
+    polyline.setAttribute('stroke', '#d4af37');
+    polyline.setAttribute('stroke-width', '2.5');
+    polyline.setAttribute('filter', 'url(#chart-glow)');
     chart.appendChild(polyline);
 
     coords.forEach(function(c, index) {
         const circle = document.createElementNS(SVG_NS, 'circle');
         circle.setAttribute('cx', c.x);
         circle.setAttribute('cy', c.y);
-        circle.setAttribute('r', '3.5');
-        circle.setAttribute('fill', '#8b4513');
+        circle.setAttribute('r', '4');
+        circle.setAttribute('fill', '#f1d78c');
         circle.appendChild(makeTitle(`${c.point.date}：累計${c.point.total}個`));
         chart.appendChild(circle);
 
@@ -242,6 +290,7 @@ function enterEditMode(recordData) {
 function exitEditMode() {
     editingRecord = null;
     form.reset();
+    form.elements['date'].value = getTodayDateString();
     submitButton.textContent = '記録する';
     cancelEditButton.hidden = true;
 }
@@ -296,6 +345,7 @@ importInput.addEventListener('change', function() {
     reader.readAsText(file);
 });
 
+form.elements['date'].value = getTodayDateString();
 renderRecords();
 
 // フォーム送信
@@ -319,6 +369,7 @@ form.addEventListener('submit', function(event) {
         saveRecords();
         renderRecords();
         form.reset();
+        form.elements['date'].value = getTodayDateString();
         alert('フォームが送信されました！');
     }
 });

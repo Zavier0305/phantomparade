@@ -1,12 +1,16 @@
 :root {
-    --color-bg: #ffebcd;
-    --color-primary: #8b4513;
-    --color-primary-dark: #6b3410;
-    --color-accent: #c0392b;
-    --color-card: #f5f5dc;
-    --color-border: #d8c9a3;
-    --color-text: #3b2a1a;
-    --color-muted: #8a7457;
+    --bg-start: #120a14;
+    --bg-end: #0a080d;
+    --surface: rgba(255, 255, 255, 0.05);
+    --surface-border: rgba(212, 175, 55, 0.25);
+    --primary: #e63946;
+    --primary-dark: #a9202c;
+    --gold: #d4af37;
+    --gold-soft: #f1d78c;
+    --purple: #7c3aed;
+    --purple-dark: #5b21b6;
+    --text: #f5f0e6;
+    --text-muted: #a89b8c;
 }
 
 * {
@@ -14,65 +18,91 @@
 }
 
 body {
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    background: radial-gradient(circle at 20% 0%, var(--bg-start) 0%, var(--bg-end) 55%);
+    color: var(--text);
     font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
     font-size: 16px;
-    line-height: 1.6em;
+    line-height: 1.7em;
     margin: 0;
+    min-height: 100vh;
 }
 
 header {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 1em 1.5em;
+    background: linear-gradient(120deg, #1a0d12, #2b0f14 55%, #1a0d12);
+    border-bottom: 2px solid var(--gold);
+    color: var(--gold-soft);
+    padding: 1.3em 1.5em;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.5em;
+    gap: 0.6em;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
 }
 
 header h1 {
-    font-size: 1.3em;
     margin: 0;
+    font-size: 1.5em;
+    letter-spacing: 0.04em;
+    background: linear-gradient(90deg, var(--gold), #fff2c4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 22px rgba(212, 175, 55, 0.3);
 }
 
 header a {
-    color: white;
+    color: var(--gold-soft);
     text-decoration: none;
     margin-left: 1em;
-    padding: 0.3em 0.6em;
-    border-radius: 4px;
-    transition: background-color 0.15s;
+    padding: 0.45em 1em;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 999px;
+    transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 header a:hover {
-    background-color: rgba(255, 255, 255, 0.18);
+    background-color: rgba(212, 175, 55, 0.15);
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
 }
 
 main {
     margin: 0 auto;
-    max-width: 640px;
-    padding: 1.5em 1em 2em;
+    max-width: 680px;
+    padding: 2em 1em 2.5em;
 }
 
 .card {
-    background-color: var(--color-card);
-    padding: 1.2em;
-    margin-bottom: 1.2em;
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    background: var(--surface);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--surface-border);
+    border-radius: 14px;
+    padding: 1.5em;
+    margin-bottom: 1.4em;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.7;
 }
 
 .card h2 {
     margin-top: 0;
-    font-size: 1.05em;
-    color: var(--color-primary-dark);
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.5em;
-    margin-bottom: 0.9em;
+    font-size: 1.15em;
+    letter-spacing: 0.03em;
+    color: var(--gold-soft);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 0.6em;
+    margin-bottom: 1em;
 }
 
 .card p {
@@ -83,11 +113,21 @@ main {
     margin-bottom: 0;
 }
 
+.card a {
+    color: var(--gold-soft);
+}
+
+.card ul {
+    color: var(--text);
+}
+
 form label {
     display: block;
-    margin-bottom: 1em;
-    font-size: 0.9em;
-    color: var(--color-primary-dark);
+    margin-bottom: 1.1em;
+    font-size: 0.8em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
     font-weight: bold;
 }
 
@@ -95,14 +135,22 @@ form input[type="date"],
 form input[type="number"],
 form textarea {
     width: 100%;
-    padding: 0.55em;
-    margin-top: 0.35em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin-top: 0.4em;
+    padding: 0.7em 0.8em;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    color: var(--text);
     font-size: 1em;
-    font-weight: normal;
-    color: var(--color-text);
     font-family: inherit;
+    color-scheme: dark;
+}
+
+form input:focus,
+form textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 form textarea {
@@ -112,55 +160,73 @@ form textarea {
 
 button,
 .file-button {
-    background-color: black;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     border: none;
-    padding: 0.55em 1.1em;
-    border-radius: 4px;
+    padding: 0.7em 1.4em;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.95em;
+    font-weight: bold;
+    letter-spacing: 0.03em;
     font-family: inherit;
+    box-shadow: 0 4px 16px rgba(230, 57, 70, 0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
 button:hover,
 .file-button:hover {
-    background-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(230, 57, 70, 0.5);
+}
+
+button:active {
+    transform: translateY(0);
 }
 
 #cancel-edit-button {
-    background-color: #777;
-    margin-left: 0.5em;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+    margin-left: 0.6em;
 }
 
 #cancel-edit-button:hover {
-    background-color: #555;
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
 }
 
 .stats-numbers {
     display: flex;
-    gap: 1.5em;
+    gap: 2em;
     flex-wrap: wrap;
-    margin-bottom: 1em;
+    margin-bottom: 1.3em;
 }
 
 .stat-label {
     display: block;
-    font-size: 0.8em;
-    color: var(--color-muted);
+    font-size: 0.75em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
 }
 
 .stat-value {
     display: block;
-    font-size: 1.4em;
+    font-size: 1.9em;
     font-weight: bold;
-    color: var(--color-primary-dark);
+    background: linear-gradient(90deg, var(--gold), #fff2c4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
 }
 
 #chart-wrapper {
-    background-color: white;
-    border-radius: 6px;
-    border: 1px solid var(--color-border);
-    padding: 0.5em;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 0.6em;
 }
 
 #chart {
@@ -170,38 +236,45 @@ button:hover,
 }
 
 .chart-empty {
-    fill: var(--color-muted);
+    fill: var(--text-muted);
     font-size: 14px;
 }
 
 .chart-axis {
-    stroke: #e0d8c0;
+    stroke: rgba(255, 255, 255, 0.1);
     stroke-width: 1;
 }
 
 .chart-axis-label {
-    fill: var(--color-muted);
+    fill: var(--text-muted);
     font-size: 11px;
 }
 
 .data-actions {
     display: flex;
     gap: 1em;
-    margin-bottom: 1em;
+    margin-bottom: 1.2em;
     flex-wrap: wrap;
 }
 
 #record-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75em;
+    gap: 0.9em;
 }
 
 .record {
-    background-color: white;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 0.8em 1em;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 10px;
+    padding: 1em 1.2em;
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.record:hover {
+    transform: translateX(4px);
+    border-left-color: var(--primary);
 }
 
 .record-main {
@@ -214,17 +287,19 @@ button:hover,
 
 .record-date {
     font-weight: bold;
-    color: var(--color-primary-dark);
+    color: var(--gold-soft);
+    letter-spacing: 0.03em;
 }
 
 .record-count {
-    font-size: 1.1em;
+    font-size: 1.15em;
     font-weight: bold;
+    color: var(--text);
 }
 
 .record-note {
-    color: #555;
-    margin: 0.4em 0 0.7em;
+    color: var(--text-muted);
+    margin: 0.5em 0 0.8em;
     word-break: break-word;
 }
 
@@ -234,40 +309,47 @@ button:hover,
 
 .record-actions {
     display: flex;
-    gap: 0.5em;
+    gap: 0.6em;
 }
 
 .record-actions button {
-    padding: 0.3em 0.8em;
-    font-size: 0.85em;
+    padding: 0.4em 1em;
+    font-size: 0.82em;
+    box-shadow: none;
+}
+
+.record-actions button:hover {
+    box-shadow: none;
 }
 
 .edit-button {
-    background-color: var(--color-primary);
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    box-shadow: 0 3px 12px rgba(124, 58, 237, 0.35);
 }
 
 .edit-button:hover {
-    background-color: #a0522d;
+    box-shadow: 0 5px 18px rgba(124, 58, 237, 0.5);
 }
 
 .delete-button {
-    background-color: #8a1f11;
+    background: linear-gradient(135deg, #ef4444, #991b1b);
+    box-shadow: 0 3px 12px rgba(239, 68, 68, 0.35);
 }
 
 .delete-button:hover {
-    background-color: var(--color-accent);
+    box-shadow: 0 5px 18px rgba(239, 68, 68, 0.5);
 }
 
 .empty-message {
-    color: var(--color-muted);
+    color: var(--text-muted);
     text-align: center;
-    padding: 1em 0;
+    padding: 1.5em 0;
 }
 
 footer.site-footer {
-    max-width: 640px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: 0 1em 2em;
+    padding: 0 1em 2.5em;
 }
 
 footer.site-footer .card {
@@ -280,7 +362,7 @@ footer.site-footer h2 {
 
 .legal-links {
     display: flex;
-    gap: 1em;
+    gap: 1.3em;
     flex-wrap: wrap;
     list-style: none;
     padding: 0;
@@ -288,7 +370,13 @@ footer.site-footer h2 {
 }
 
 .legal-links a {
-    color: var(--color-primary-dark);
+    color: var(--gold-soft);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+
+.legal-links a:hover {
+    border-bottom-color: var(--gold-soft);
 }
 
 ul.tool-list {
@@ -298,8 +386,8 @@ ul.tool-list {
 }
 
 ul.tool-list li {
-    padding: 0.8em 0;
-    border-bottom: 1px solid var(--color-border);
+    padding: 1em 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 ul.tool-list li:last-child {
@@ -307,11 +395,17 @@ ul.tool-list li:last-child {
 }
 
 ul.tool-list a {
-    color: var(--color-primary-dark);
+    color: var(--gold-soft);
     font-weight: bold;
+    font-size: 1.15em;
     text-decoration: none;
 }
 
 ul.tool-list a:hover {
     text-decoration: underline;
+}
+
+ul.tool-list p {
+    color: var(--text-muted);
+    margin: 0.5em 0 0;
 }

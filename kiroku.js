@@ -73,7 +73,11 @@ if (savedRecords) {
 let editingRecord = null;
 
 function saveRecords() {
-    localStorage.setItem('records', JSON.stringify(records));
+    try {
+        localStorage.setItem('records', JSON.stringify(records));
+    } catch (error) {
+        alert('保存に失敗しました。ブラウザのプライベートモードや、ストレージの空き容量をご確認ください。');
+    }
 }
 
 function createRecordElement(recordData) {

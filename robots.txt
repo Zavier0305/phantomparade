@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zavier0305.github.io/phantomparade/sitemap.xml

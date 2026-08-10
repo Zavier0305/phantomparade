@@ -24,7 +24,11 @@ function loadState() {
 }
 
 function saveState(state) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (error) {
+        alert('保存に失敗しました。ブラウザのプライベートモードや、ストレージの空き容量をご確認ください。');
+    }
 }
 
 let state = loadState();

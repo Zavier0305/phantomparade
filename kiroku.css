@@ -57,6 +57,24 @@ main {
     padding: 1.5em 1em 2em;
 }
 
+@media (min-width: 900px) {
+    main {
+        max-width: 1100px;
+    }
+
+    .layout {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        align-items: start;
+        gap: 1.4em;
+    }
+
+    .layout-sidebar,
+    .layout-main {
+        min-width: 0;
+    }
+}
+
 .card {
     background-color: var(--surface);
     border: 1px solid var(--border);
@@ -284,6 +302,12 @@ footer.site-footer {
     padding: 0 1em 2em;
 }
 
+@media (min-width: 900px) {
+    footer.site-footer {
+        max-width: 1100px;
+    }
+}
+
 footer.site-footer .card {
     margin-bottom: 1em;
 }
@@ -305,32 +329,39 @@ footer.site-footer h2 {
     color: var(--primary);
 }
 
-ul.tool-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.tool-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
 }
 
-ul.tool-list li {
-    padding: 0.8em 0;
-    border-bottom: 1px solid var(--border);
+@media (min-width: 700px) {
+    .tool-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
 }
 
-ul.tool-list li:last-child {
-    border-bottom: none;
-}
-
-ul.tool-list a {
-    color: var(--primary);
-    font-weight: bold;
+.tool-card {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1em;
     text-decoration: none;
+    color: inherit;
 }
 
-ul.tool-list a:hover {
-    text-decoration: underline;
+.tool-card:hover {
+    border-color: var(--primary);
 }
 
-ul.tool-list p {
+.tool-card h3 {
+    margin: 0 0 0.4em;
+    color: var(--primary);
+    font-size: 1.05em;
+}
+
+.tool-card p {
+    margin: 0;
     color: var(--text-muted);
-    margin: 0.4em 0 0;
+    font-size: 0.9em;
 }

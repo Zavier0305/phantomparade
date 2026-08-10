@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>廻珠記録帳</title>
+    <title>課金額記録帳</title>
     <link rel="stylesheet" href="kiroku.css">
 </head>
 <body>
     <header>
-        <h1>廻珠記録帳</h1>
+        <h1>課金額記録帳</h1>
         <a href="index.html">ホームへ戻る</a>
     </header>
     <main>
@@ -16,17 +16,17 @@
             <div class="layout-sidebar">
                 <section class="card">
                     <h2>記録する</h2>
-                    <form id="kiroku-form">
+                    <form id="kingaku-form">
                         <label>
                             日付
                             <input type="date" name="date" required>
                         </label>
                         <label>
-                            廻珠数(その時点の所持数)
-                            <input type="number" name="count" min="0" required>
+                            金額(円)
+                            <input type="number" name="amount" min="0" required>
                         </label>
                         <label>
-                            備考
+                            備考(購入したパック等)
                             <textarea name="notes"></textarea>
                         </label>
                         <button type="submit" id="submit-button">記録する</button>
@@ -34,34 +34,20 @@
                     </form>
                 </section>
 
-                <section class="card" id="countdown-section">
-                    <h2>カウントダウン</h2>
-                    <div class="stats-numbers">
-                        <div class="stat-item">
-                            <span class="stat-label" id="countdown-label">-</span>
-                            <span class="stat-value" id="countdown-days">-日</span>
-                        </div>
-                    </div>
-                </section>
-
                 <section class="card" id="stats-section">
                     <h2>集計</h2>
                     <div class="stats-numbers">
                         <div class="stat-item">
-                            <span class="stat-label">現在の廻珠数</span>
-                            <span class="stat-value" id="total-count">0個</span>
+                            <span class="stat-label">累計課金額</span>
+                            <span class="stat-value" id="total-amount">¥0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">単発換算(300個)</span>
-                            <span class="stat-value" id="single-pull-count">0回</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">10連換算(3000個)</span>
-                            <span class="stat-value" id="ten-pull-count">0回</span>
+                            <span class="stat-label">今月の課金額</span>
+                            <span class="stat-value" id="month-amount">¥0</span>
                         </div>
                     </div>
                     <div id="chart-wrapper">
-                        <svg id="chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="廻珠数の推移グラフ"></svg>
+                        <svg id="chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="累計課金額の推移グラフ"></svg>
                     </div>
                 </section>
             </div>
@@ -85,11 +71,12 @@
         <div class="card">
             <ul class="legal-links">
                 <li><a href="index.html">ホーム</a></li>
+                <li><a href="kiroku.html">廻珠記録帳</a></li>
                 <li><a href="riyoukiyaku.html">利用規約</a></li>
                 <li><a href="privacy.html">プライバシーポリシー</a></li>
             </ul>
         </div>
     </footer>
-    <script src="kiroku.js"></script>
+    <script src="kingaku.js"></script>
 </body>
 </html>

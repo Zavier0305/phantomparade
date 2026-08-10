@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP回復タイマー</title>
+    <link rel="stylesheet" href="kiroku.css">
+</head>
+<body>
+    <header>
+        <h1>AP回復タイマー</h1>
+        <a href="index.html">ホームへ戻る</a>
+    </header>
+    <main>
+        <div class="layout">
+            <div class="layout-sidebar">
+                <section class="card">
+                    <h2>APを記録する</h2>
+                    <p>3分で1回復するので、それをもとに全回復までの時間を計算します。</p>
+                    <form id="ap-form">
+                        <label>
+                            現在のAP
+                            <input type="number" name="currentAp" min="0" required>
+                        </label>
+                        <label>
+                            最大AP
+                            <input type="number" name="maxAp" min="1" required placeholder="例：150">
+                        </label>
+                        <button type="submit">計算する</button>
+                    </form>
+                </section>
+            </div>
+
+            <div class="layout-main">
+                <section class="card">
+                    <h2>回復状況</h2>
+                    <div class="stats-numbers">
+                        <div class="stat-item">
+                            <span class="stat-label">現在の推定AP</span>
+                            <span class="stat-value" id="current-ap">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">全回復まで</span>
+                            <span class="stat-value" id="countdown">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">全回復予定時刻</span>
+                            <span class="stat-value" id="full-time">-</span>
+                        </div>
+                    </div>
+                    <p id="status-message" class="empty-message">左のフォームに現在のAPと最大APを入力してください。</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="card">
+            <ul class="legal-links">
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="kiroku.html">廻珠記録帳</a></li>
+                <li><a href="kingaku.html">課金額記録帳</a></li>
+                <li><a href="riyoukiyaku.html">利用規約</a></li>
+                <li><a href="privacy.html">プライバシーポリシー</a></li>
+            </ul>
+        </div>
+    </footer>
+    <script src="ap.js"></script>
+</body>
+</html>

@@ -3,7 +3,8 @@ const recordList = document.getElementById('record-list');
 const submitButton = document.getElementById('submit-button');
 const cancelEditButton = document.getElementById('cancel-edit-button');
 const totalCountEl = document.getElementById('total-count');
-const pullEstimateEl = document.getElementById('pull-estimate');
+const singlePullCountEl = document.getElementById('single-pull-count');
+const tenPullCountEl = document.getElementById('ten-pull-count');
 const chart = document.getElementById('chart');
 const exportButton = document.getElementById('export-button');
 const importInput = document.getElementById('import-input');
@@ -33,14 +34,33 @@ function createRecordElement(recordData) {
     const record = document.createElement('div');
     record.className = 'record';
 
-    const dateP = document.createElement('p');
-    dateP.textContent = `日付：${recordData.date}`;
+    const main = document.createElement('div');
+    main.className = 'record-main';
 
-    const countP = document.createElement('p');
-    countP.textContent = `廻珠数：${recordData.count}`;
+    const dateSpan = document.createElement('span');
+    dateSpan.className = 'record-date';
+    dateSpan.textContent = recordData.date;
+
+    const countSpan = document.createElement('span');
+    countSpan.className = 'record-count';
+    countSpan.textContent = `廻珠数：${recordData.count}`;
+
+    main.append(dateSpan, countSpan);
 
     const noteP = document.createElement('p');
-    noteP.textContent = `備考：${recordData.note}`;
+    noteP.className = 'record-note';
+    noteP.textContent = recordData.note;
+
+    const actions = document.createElement('div');
+    actions.className = 'record-actions';
+
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.className = 'edit-button';
+    editButton.textContent = '編集';
+    editButton.addEventListener('click', function() {
+        enterEditMode(recordData);
+    });
 
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
@@ -60,23 +80,25 @@ function createRecordElement(recordData) {
         renderRecords();
     });
 
-    const editButton = document.createElement('button');
-    editButton.type = 'button';
-    editButton.className = 'edit-button';
-    editButton.textContent = '編集';
-    editButton.addEventListener('click', function() {
-        enterEditMode(recordData);
-    });
-
-    record.append(dateP, countP, noteP, deleteButton, editButton);
+    actions.append(editButton, deleteButton);
+    record.append(main, noteP, actions);
     return record;
 }
 
 function renderRecords() {
     recordList.innerHTML = '';
-    records.forEach(function(recordData) {
-        recordList.appendChild(createRecordElement(recordData));
-    });
+
+    if (records.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'empty-message';
+        empty.textContent = 'まだ記録がありません。上のフォームから記録してみましょう。';
+        recordList.appendChild(empty);
+    } else {
+        records.forEach(function(recordData) {
+            recordList.appendChild(createRecordElement(recordData));
+        });
+    }
+
     renderStats();
     renderChart();
 }
@@ -87,11 +109,22 @@ function renderStats() {
         return sum + (Number.isFinite(count) ? count : 0);
     }, 0);
 
-    const singlePulls = Math.floor(total / SINGLE_PULL_COST);
-    const tenPulls = Math.floor(total / TEN_PULL_COST);
+    totalCountEl.textContent = `${total}個`;
+    singlePullCountEl.textContent = `${Math.floor(total / SINGLE_PULL_COST)}回`;
+    tenPullCountEl.textContent = `${Math.floor(total / TEN_PULL_COST)}回`;
+}
 
-    totalCountEl.textContent = `累計獲得数：${total}個`;
-    pullEstimateEl.textContent = `ガチャ換算：単発${singlePulls}回分 / 10連${tenPulls}回分`;
+function getSortedCumulativePoints() {
+    const sorted = records.slice().sort(function(a, b) {
+        return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    });
+
+    let cumulative = 0;
+    return sorted.map(function(recordData) {
+        const count = Number(recordData.count);
+        cumulative += Number.isFinite(count) ? count : 0;
+        return { date: recordData.date, total: cumulative };
+    });
 }
 
 function renderChart() {
@@ -99,43 +132,67 @@ function renderChart() {
         chart.removeChild(chart.firstChild);
     }
 
-    const sorted = records
-        .slice()
-        .sort(function(a, b) {
-            return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
-        });
-
-    let cumulative = 0;
-    const points = sorted.map(function(recordData) {
-        const count = Number(recordData.count);
-        cumulative += Number.isFinite(count) ? count : 0;
-        return { date: recordData.date, total: cumulative };
-    });
+    const points = getSortedCumulativePoints();
 
     if (points.length === 0) {
         const text = document.createElementNS(SVG_NS, 'text');
         text.setAttribute('x', '300');
-        text.setAttribute('y', '100');
+        text.setAttribute('y', '110');
         text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#999');
+        text.setAttribute('class', 'chart-empty');
         text.textContent = '記録がありません';
         chart.appendChild(text);
         return;
     }
 
-    const paddingX = 20;
-    const paddingY = 20;
     const width = 600;
-    const height = 200;
+    const height = 220;
+    const paddingLeft = 50;
+    const paddingRight = 20;
+    const paddingTop = 15;
+    const paddingBottom = 30;
+    const plotWidth = width - paddingLeft - paddingRight;
+    const plotHeight = height - paddingTop - paddingBottom;
     const maxTotal = points[points.length - 1].total || 1;
 
     const coords = points.map(function(point, index) {
         const x = points.length === 1
-            ? width / 2
-            : paddingX + (index * (width - paddingX * 2)) / (points.length - 1);
-        const y = height - paddingY - (point.total / maxTotal) * (height - paddingY * 2);
-        return { x: x, y: y };
+            ? paddingLeft + plotWidth / 2
+            : paddingLeft + (index * plotWidth) / (points.length - 1);
+        const y = paddingTop + plotHeight - (point.total / maxTotal) * plotHeight;
+        return { x: x, y: y, point: point };
     });
+
+    // 横方向のグリッド線とY軸ラベル(0%・50%・100%)
+    [0, 0.5, 1].forEach(function(ratio) {
+        const y = paddingTop + plotHeight - ratio * plotHeight;
+
+        const line = document.createElementNS(SVG_NS, 'line');
+        line.setAttribute('x1', paddingLeft);
+        line.setAttribute('x2', width - paddingRight);
+        line.setAttribute('y1', y);
+        line.setAttribute('y2', y);
+        line.setAttribute('class', 'chart-axis');
+        chart.appendChild(line);
+
+        const label = document.createElementNS(SVG_NS, 'text');
+        label.setAttribute('x', paddingLeft - 8);
+        label.setAttribute('y', y + 4);
+        label.setAttribute('text-anchor', 'end');
+        label.setAttribute('class', 'chart-axis-label');
+        label.textContent = Math.round(maxTotal * ratio);
+        chart.appendChild(label);
+    });
+
+    // 塗りつぶし(累計の推移を面で見せる)
+    const areaPoints = [`${coords[0].x},${paddingTop + plotHeight}`]
+        .concat(coords.map(function(c) { return `${c.x},${c.y}`; }))
+        .concat([`${coords[coords.length - 1].x},${paddingTop + plotHeight}`]);
+    const area = document.createElementNS(SVG_NS, 'polygon');
+    area.setAttribute('points', areaPoints.join(' '));
+    area.setAttribute('fill', 'rgba(139, 69, 19, 0.15)');
+    area.setAttribute('stroke', 'none');
+    chart.appendChild(area);
 
     const polyline = document.createElementNS(SVG_NS, 'polyline');
     polyline.setAttribute('points', coords.map(function(c) { return `${c.x},${c.y}`; }).join(' '));
@@ -144,14 +201,32 @@ function renderChart() {
     polyline.setAttribute('stroke-width', '2');
     chart.appendChild(polyline);
 
-    coords.forEach(function(c) {
+    coords.forEach(function(c, index) {
         const circle = document.createElementNS(SVG_NS, 'circle');
         circle.setAttribute('cx', c.x);
         circle.setAttribute('cy', c.y);
-        circle.setAttribute('r', '3');
+        circle.setAttribute('r', '3.5');
         circle.setAttribute('fill', '#8b4513');
+        circle.appendChild(makeTitle(`${c.point.date}：累計${c.point.total}個`));
         chart.appendChild(circle);
+
+        // 日付ラベルは最初と最後の点のみ表示(重なり防止)
+        if (index === 0 || index === coords.length - 1) {
+            const dateLabel = document.createElementNS(SVG_NS, 'text');
+            dateLabel.setAttribute('x', c.x);
+            dateLabel.setAttribute('y', height - 8);
+            dateLabel.setAttribute('text-anchor', index === 0 ? 'start' : 'end');
+            dateLabel.setAttribute('class', 'chart-axis-label');
+            dateLabel.textContent = c.point.date;
+            chart.appendChild(dateLabel);
+        }
     });
+}
+
+function makeTitle(text) {
+    const title = document.createElementNS(SVG_NS, 'title');
+    title.textContent = text;
+    return title;
 }
 
 function enterEditMode(recordData) {

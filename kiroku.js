@@ -229,70 +229,29 @@ function renderChart() {
         chart.appendChild(label);
     });
 
-    // グラデーション定義(塗りつぶし用)とグロー効果(折れ線・点用)
-    const defs = document.createElementNS(SVG_NS, 'defs');
-
-    const gradient = document.createElementNS(SVG_NS, 'linearGradient');
-    gradient.setAttribute('id', 'chart-area-gradient');
-    gradient.setAttribute('x1', '0');
-    gradient.setAttribute('y1', '0');
-    gradient.setAttribute('x2', '0');
-    gradient.setAttribute('y2', '1');
-    const stopTop = document.createElementNS(SVG_NS, 'stop');
-    stopTop.setAttribute('offset', '0%');
-    stopTop.setAttribute('stop-color', '#d4af37');
-    stopTop.setAttribute('stop-opacity', '0.35');
-    const stopBottom = document.createElementNS(SVG_NS, 'stop');
-    stopBottom.setAttribute('offset', '100%');
-    stopBottom.setAttribute('stop-color', '#d4af37');
-    stopBottom.setAttribute('stop-opacity', '0');
-    gradient.append(stopTop, stopBottom);
-    defs.appendChild(gradient);
-
-    const glow = document.createElementNS(SVG_NS, 'filter');
-    glow.setAttribute('id', 'chart-glow');
-    glow.setAttribute('x', '-50%');
-    glow.setAttribute('y', '-50%');
-    glow.setAttribute('width', '200%');
-    glow.setAttribute('height', '200%');
-    const blur = document.createElementNS(SVG_NS, 'feGaussianBlur');
-    blur.setAttribute('stdDeviation', '3');
-    blur.setAttribute('result', 'blur');
-    const merge = document.createElementNS(SVG_NS, 'feMerge');
-    const mergeBlur = document.createElementNS(SVG_NS, 'feMergeNode');
-    mergeBlur.setAttribute('in', 'blur');
-    const mergeSource = document.createElementNS(SVG_NS, 'feMergeNode');
-    mergeSource.setAttribute('in', 'SourceGraphic');
-    merge.append(mergeBlur, mergeSource);
-    glow.append(blur, merge);
-    defs.appendChild(glow);
-
-    chart.appendChild(defs);
-
     // 塗りつぶし(廻珠数の推移を面で見せる)
     const areaPoints = [`${coords[0].x},${paddingTop + plotHeight}`]
         .concat(coords.map(function(c) { return `${c.x},${c.y}`; }))
         .concat([`${coords[coords.length - 1].x},${paddingTop + plotHeight}`]);
     const area = document.createElementNS(SVG_NS, 'polygon');
     area.setAttribute('points', areaPoints.join(' '));
-    area.setAttribute('fill', 'url(#chart-area-gradient)');
+    area.setAttribute('fill', 'rgba(139, 69, 19, 0.08)');
     area.setAttribute('stroke', 'none');
     chart.appendChild(area);
 
     const polyline = document.createElementNS(SVG_NS, 'polyline');
     polyline.setAttribute('points', coords.map(function(c) { return `${c.x},${c.y}`; }).join(' '));
     polyline.setAttribute('fill', 'none');
-    polyline.setAttribute('stroke', '#d4af37');
-    polyline.setAttribute('stroke-width', '2.5');
-    polyline.setAttribute('filter', 'url(#chart-glow)');
+    polyline.setAttribute('stroke', '#8b4513');
+    polyline.setAttribute('stroke-width', '2');
     chart.appendChild(polyline);
 
     coords.forEach(function(c, index) {
         const circle = document.createElementNS(SVG_NS, 'circle');
         circle.setAttribute('cx', c.x);
         circle.setAttribute('cy', c.y);
-        circle.setAttribute('r', '4');
-        circle.setAttribute('fill', '#f1d78c');
+        circle.setAttribute('r', '3.5');
+        circle.setAttribute('fill', '#8b4513');
         circle.appendChild(makeTitle(`${c.point.date}：${c.point.value}個`));
         chart.appendChild(circle);
 

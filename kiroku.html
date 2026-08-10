@@ -4,50 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>廻珠記録帳</title>
-<link rel="stylesheet" href="kiroku.css">
+    <link rel="stylesheet" href="kiroku.css">
 </head>
 <body>
     <header>
-        <h1>廻珠記録帳</h1> 
+        <h1>廻珠記録帳</h1>
         <a href="index.html">ホームへ戻る</a>
     </header>
     <main>
-<form id="kiroku-form">
- <label>
- 日付
- <input type="date" name="date" required>
-</label>
-<label>
- 廻珠数
- <input type="number" name="count" min="0" required>
-</label>
-<label>
- 備考
- <textarea name="notes"></textarea>
-</label>
-<button type="submit" id="submit-button">記録する</button>
-<button type="button" id="cancel-edit-button" hidden>編集をキャンセル</button>
-</form>
-<section id="stats-section">
- <h2>集計</h2>
- <p id="total-count"></p>
- <p id="pull-estimate"></p>
- <svg id="chart" viewBox="0 0 600 200" preserveAspectRatio="none" role="img" aria-label="累計廻珠数の推移グラフ"></svg>
-</section>
-<section>
- <h2>記録一覧</h2>
- <div class="data-actions">
-  <button type="button" id="export-button">エクスポート</button>
-  <label class="file-button">
-   インポート
-   <input type="file" id="import-input" accept="application/json" hidden>
-  </label>
- </div>
-<div id="record-list">
+        <section class="card">
+            <h2>記録する</h2>
+            <form id="kiroku-form">
+                <label>
+                    日付
+                    <input type="date" name="date" required>
+                </label>
+                <label>
+                    廻珠数
+                    <input type="number" name="count" min="0" required>
+                </label>
+                <label>
+                    備考
+                    <textarea name="notes"></textarea>
+                </label>
+                <button type="submit" id="submit-button">記録する</button>
+                <button type="button" id="cancel-edit-button" hidden>編集をキャンセル</button>
+            </form>
+        </section>
 
-</div>
-</section>
-</main>
-<script src="kiroku.js"></script>
+        <section class="card" id="stats-section">
+            <h2>集計</h2>
+            <div class="stats-numbers">
+                <div class="stat-item">
+                    <span class="stat-label">累計獲得数</span>
+                    <span class="stat-value" id="total-count">0個</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">単発換算(300個)</span>
+                    <span class="stat-value" id="single-pull-count">0回</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">10連換算(3000個)</span>
+                    <span class="stat-value" id="ten-pull-count">0回</span>
+                </div>
+            </div>
+            <div id="chart-wrapper">
+                <svg id="chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="累計廻珠数の推移グラフ"></svg>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>記録一覧</h2>
+            <div class="data-actions">
+                <button type="button" id="export-button">エクスポート</button>
+                <label class="file-button">
+                    インポート
+                    <input type="file" id="import-input" accept="application/json" hidden>
+                </label>
+            </div>
+            <div id="record-list"></div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="card">
+            <ul class="legal-links">
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="riyoukiyaku.html">利用規約</a></li>
+                <li><a href="privacy.html">プライバシーポリシー</a></li>
+            </ul>
+        </div>
+    </footer>
+    <script src="kiroku.js"></script>
 </body>
 </html>

@@ -1,103 +1,317 @@
+:root {
+    --color-bg: #ffebcd;
+    --color-primary: #8b4513;
+    --color-primary-dark: #6b3410;
+    --color-accent: #c0392b;
+    --color-card: #f5f5dc;
+    --color-border: #d8c9a3;
+    --color-text: #3b2a1a;
+    --color-muted: #8a7457;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #ffebcd;
-    font-family: sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
     font-size: 16px;
     line-height: 1.6em;
+    margin: 0;
 }
 
 header {
-    background-color: #8b4513;
+    background-color: var(--color-primary);
     color: white;
-    padding: 1em;
+    padding: 1em 1.5em;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+header h1 {
+    font-size: 1.3em;
+    margin: 0;
 }
 
 header a {
     color: white;
     text-decoration: none;
     margin-left: 1em;
+    padding: 0.3em 0.6em;
+    border-radius: 4px;
+    transition: background-color 0.15s;
 }
 
-form {
-    margin: 1em 0;
+header a:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+main {
+    margin: 0 auto;
+    max-width: 640px;
+    padding: 1.5em 1em 2em;
+}
+
+.card {
+    background-color: var(--color-card);
+    padding: 1.2em;
+    margin-bottom: 1.2em;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.05em;
+    color: var(--color-primary-dark);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.5em;
+    margin-bottom: 0.9em;
+}
+
+.card p {
+    margin: 0 0 0.9em;
+}
+
+.card p:last-child {
+    margin-bottom: 0;
 }
 
 form label {
     display: block;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
+    font-size: 0.9em;
+    color: var(--color-primary-dark);
+    font-weight: bold;
 }
 
 form input[type="date"],
 form input[type="number"],
 form textarea {
     width: 100%;
-    padding: 0.5em;
-    margin-bottom: 1em;
+    padding: 0.55em;
+    margin-top: 0.35em;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
+    font-size: 1em;
+    font-weight: normal;
+    color: var(--color-text);
+    font-family: inherit;
 }
 
 form textarea {
-    height: 100px;
-}
-form button {
-    background-color:black;
-    color: white;
-    border: none;
-    padding: 0.5em 1em;
-    border-radius: 4px;
-    cursor: pointer;
+    height: 90px;
+    resize: vertical;
 }
 
-form button:hover {
-    background-color: red;
-}
-#record-list {
-    background-color: #f5f5dc;
-    padding: 1em;
-    margin-bottom: 1em;
-    border-radius: 4px;
-    border:1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.record {
-    background-color: #f5f5dc;
-}
-main{
-    margin: 0 auto;
-    max-width: 600px;
-}
-#stats-section {
-    background-color: #f5f5dc;
-    padding: 1em;
-    margin-bottom: 1em;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-#chart {
-    width: 100%;
-    height: 200px;
-    background-color: white;
-    border-radius: 4px;
-}
-.data-actions {
-    display: flex;
-    gap: 1em;
-    margin-bottom: 1em;
-}
-.data-actions button,
+button,
 .file-button {
     background-color: black;
     color: white;
     border: none;
-    padding: 0.5em 1em;
+    padding: 0.55em 1.1em;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.95em;
+    font-family: inherit;
 }
-.data-actions button:hover,
+
+button:hover,
 .file-button:hover {
-    background-color: red;
+    background-color: var(--color-accent);
+}
+
+#cancel-edit-button {
+    background-color: #777;
+    margin-left: 0.5em;
+}
+
+#cancel-edit-button:hover {
+    background-color: #555;
+}
+
+.stats-numbers {
+    display: flex;
+    gap: 1.5em;
+    flex-wrap: wrap;
+    margin-bottom: 1em;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8em;
+    color: var(--color-muted);
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--color-primary-dark);
+}
+
+#chart-wrapper {
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    padding: 0.5em;
+}
+
+#chart {
+    width: 100%;
+    height: 220px;
+    display: block;
+}
+
+.chart-empty {
+    fill: var(--color-muted);
+    font-size: 14px;
+}
+
+.chart-axis {
+    stroke: #e0d8c0;
+    stroke-width: 1;
+}
+
+.chart-axis-label {
+    fill: var(--color-muted);
+    font-size: 11px;
+}
+
+.data-actions {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 1em;
+    flex-wrap: wrap;
+}
+
+#record-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+}
+
+.record {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.8em 1em;
+}
+
+.record-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.3em 1em;
+}
+
+.record-date {
+    font-weight: bold;
+    color: var(--color-primary-dark);
+}
+
+.record-count {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.record-note {
+    color: #555;
+    margin: 0.4em 0 0.7em;
+    word-break: break-word;
+}
+
+.record-note:empty {
+    display: none;
+}
+
+.record-actions {
+    display: flex;
+    gap: 0.5em;
+}
+
+.record-actions button {
+    padding: 0.3em 0.8em;
+    font-size: 0.85em;
+}
+
+.edit-button {
+    background-color: var(--color-primary);
+}
+
+.edit-button:hover {
+    background-color: #a0522d;
+}
+
+.delete-button {
+    background-color: #8a1f11;
+}
+
+.delete-button:hover {
+    background-color: var(--color-accent);
+}
+
+.empty-message {
+    color: var(--color-muted);
+    text-align: center;
+    padding: 1em 0;
+}
+
+footer.site-footer {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1em 2em;
+}
+
+footer.site-footer .card {
+    margin-bottom: 1em;
+}
+
+footer.site-footer h2 {
+    font-size: 1em;
+}
+
+.legal-links {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0.5em 0 0;
+}
+
+.legal-links a {
+    color: var(--color-primary-dark);
+}
+
+ul.tool-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.tool-list li {
+    padding: 0.8em 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+ul.tool-list li:last-child {
+    border-bottom: none;
+}
+
+ul.tool-list a {
+    color: var(--color-primary-dark);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+ul.tool-list a:hover {
+    text-decoration: underline;
 }

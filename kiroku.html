@@ -28,10 +28,23 @@
 <button type="submit" id="submit-button">記録する</button>
 <button type="button" id="cancel-edit-button" hidden>編集をキャンセル</button>
 </form>
+<section id="stats-section">
+ <h2>集計</h2>
+ <p id="total-count"></p>
+ <p id="pull-estimate"></p>
+ <svg id="chart" viewBox="0 0 600 200" preserveAspectRatio="none" role="img" aria-label="累計廻珠数の推移グラフ"></svg>
+</section>
 <section>
  <h2>記録一覧</h2>
+ <div class="data-actions">
+  <button type="button" id="export-button">エクスポート</button>
+  <label class="file-button">
+   インポート
+   <input type="file" id="import-input" accept="application/json" hidden>
+  </label>
+ </div>
 <div id="record-list">
-      
+
 </div>
 </section>
 </main>

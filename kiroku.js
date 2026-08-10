@@ -8,16 +8,55 @@ const tenPullCountEl = document.getElementById('ten-pull-count');
 const chart = document.getElementById('chart');
 const exportButton = document.getElementById('export-button');
 const importInput = document.getElementById('import-input');
+const countdownLabelEl = document.getElementById('countdown-label');
+const countdownDaysEl = document.getElementById('countdown-days');
 
 const SINGLE_PULL_COST = 300;
 const TEN_PULL_COST = 3000;
 const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const HALF_ANNIVERSARY_MONTH = 5;
+const HALF_ANNIVERSARY_DAY = 21;
+const ANNIVERSARY_MONTH = 11;
+const ANNIVERSARY_DAY = 21;
+const SERVICE_START_YEAR = 2023;
 
 function getTodayDateString() {
     const now = new Date();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function getNextAnniversaryEvent(today) {
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const candidates = [];
+
+    [todayMidnight.getFullYear(), todayMidnight.getFullYear() + 1].forEach(function(year) {
+        candidates.push({
+            date: new Date(year, HALF_ANNIVERSARY_MONTH - 1, HALF_ANNIVERSARY_DAY),
+            label: 'ハーフバースデー'
+        });
+        candidates.push({
+            date: new Date(year, ANNIVERSARY_MONTH - 1, ANNIVERSARY_DAY),
+            label: `${year - SERVICE_START_YEAR}周年`
+        });
+    });
+
+    return candidates
+        .filter(function(c) { return c.date.getTime() >= todayMidnight.getTime(); })
+        .sort(function(a, b) { return a.date.getTime() - b.date.getTime(); })[0];
+}
+
+function renderCountdown() {
+    const today = new Date();
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const next = getNextAnniversaryEvent(today);
+    const diffDays = Math.round((next.date.getTime() - todayMidnight.getTime()) / (1000 * 60 * 60 * 24));
+    const dateStr = `${next.date.getFullYear()}/${String(next.date.getMonth() + 1).padStart(2, '0')}/${String(next.date.getDate()).padStart(2, '0')}`;
+
+    countdownLabelEl.textContent = `${dateStr}(${next.label})`;
+    countdownDaysEl.textContent = diffDays === 0 ? '今日！' : `あと${diffDays}日`;
 }
 
 const savedRecords = localStorage.getItem('records');
@@ -345,6 +384,7 @@ importInput.addEventListener('change', function() {
 });
 
 form.elements['date'].value = getTodayDateString();
+renderCountdown();
 renderRecords();
 
 // フォーム送信

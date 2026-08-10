@@ -13,6 +13,13 @@ const SINGLE_PULL_COST = 300;
 const TEN_PULL_COST = 3000;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+function getTodayDateString() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${now.getFullYear()}-${month}-${day}`;
+}
+
 const savedRecords = localStorage.getItem('records');
 let records = [];
 
@@ -283,6 +290,7 @@ function enterEditMode(recordData) {
 function exitEditMode() {
     editingRecord = null;
     form.reset();
+    form.elements['date'].value = getTodayDateString();
     submitButton.textContent = '記録する';
     cancelEditButton.hidden = true;
 }
@@ -337,6 +345,7 @@ importInput.addEventListener('change', function() {
     reader.readAsText(file);
 });
 
+form.elements['date'].value = getTodayDateString();
 renderRecords();
 
 // フォーム送信
@@ -360,6 +369,7 @@ form.addEventListener('submit', function(event) {
         saveRecords();
         renderRecords();
         form.reset();
+        form.elements['date'].value = getTodayDateString();
         alert('フォームが送信されました！');
     }
 });

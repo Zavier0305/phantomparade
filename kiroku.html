@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>廻珠記録帳</title>
 <link rel="stylesheet" href="kiroku.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <a href="index.html">ホームへ戻る</a>
     </header>
     <main>
-<form>
+<form id="kiroku-form">
  <label>
  日付
  <input type="date" name="date" required>
@@ -29,14 +29,11 @@
 </form>
 <section>
  <h2>記録一覧</h2>
-<div class="record">
-    <p>日付</p>
-    <p>廻珠数</p>
-    <p>備考</p>
-    <button>削除</button>
-    <button>編集</button>      
+<div id="record-list">
+      
 </div>
 </section>
 </main>
+<script src="kiroku.js"></script>
 </body>
 </html>

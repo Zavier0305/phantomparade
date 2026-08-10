@@ -42,9 +42,8 @@ form textarea {
 form textarea {
     height: 100px;
 }
-
 form button {
-    background-color: #8b4513;
+    background-color:black;
     color: white;
     border: none;
     padding: 0.5em 1em;
@@ -55,14 +54,16 @@ form button {
 form button:hover {
     background-color: red;
 }
-
-.record {
+#record-list {
     background-color: #f5f5dc;
     padding: 1em;
     margin-bottom: 1em;
     border-radius: 4px;
     border:1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.record {
+    background-color: #f5f5dc;
 }
 main{
     margin: 0 auto;
